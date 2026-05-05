@@ -26,9 +26,9 @@ export class UIContainer extends Container {
     }
   }
 
-  setTimerText(t: string) {
+  setTimerText(n: number) {
     if (this.timerText) {
-      this.timerText.text = `${t}s`;
+      this.timerText.text = `${n}s`;
     }
   }
 
