@@ -1,12 +1,14 @@
 import { Container, Text } from "pixi.js";
 import { CONFIG, UI_STYLE } from "../config.ts";
 
-export class UIContainer extends Container {
+export class UILayer {
+  readonly container = new Container();
+
   public scoreText?: Text;
   public timerText?: Text;
 
   init() {
-    this.removeChildren();
+    this.container.removeChildren();
 
     this.scoreText = new Text({ text: "Score: 0", style: UI_STYLE });
     this.scoreText.x = 16;
@@ -17,7 +19,7 @@ export class UIContainer extends Container {
     this.timerText.x = CONFIG.CANVAS_WIDTH - 16;
     this.timerText.y = 12;
 
-    this.addChild(this.scoreText, this.timerText);
+    this.container.addChild(this.scoreText, this.timerText);
   }
 
   setScore(s: number) {
@@ -33,7 +35,7 @@ export class UIContainer extends Container {
   }
 
   showResults(score: number, goldenCount: number): void {
-    this.removeChildren();
+    this.container.removeChildren();
 
     const finalScore = score + goldenCount * CONFIG.GOLDEN_LETTER_PRICE;
 
@@ -52,6 +54,10 @@ export class UIContainer extends Container {
     resultsText.anchor.set(0.5);
     resultsText.x = CONFIG.CANVAS_WIDTH / 2;
     resultsText.y = CONFIG.CANVAS_HEIGHT / 2;
-    this.addChild(resultsText);
+    this.container.addChild(resultsText);
+  }
+
+  clear(): void {
+    this.container.removeChildren();
   }
 }

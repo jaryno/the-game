@@ -1,7 +1,7 @@
 import { Application, Ticker } from "pixi.js";
-import { GameContainer } from "./layers/GameContainer";
-import { MenuScreenContainer } from "./layers/MenuScreenContainer";
-import { UIContainer } from "./layers/UIContainer";
+import { GameLayer } from "./layers/GameLayer";
+import { MenuScreenLayer } from "./layers/MenuScreenLayer";
+import { UILayer } from "./layers/UILayer";
 import { GameState } from "./types/GameState";
 import { GameLoop } from "./GameLoop.ts";
 
@@ -9,9 +9,9 @@ export class GameScene {
   private app: Application;
   private state: GameState = GameState.MENU;
 
-  private readonly gameContainer: GameContainer;
-  private readonly uiContainer: UIContainer;
-  private readonly menuScreen: MenuScreenContainer;
+  private readonly gameLayer: GameLayer;
+  private readonly uiLayer: UILayer;
+  private readonly menuScreenLayer: MenuScreenLayer;
 
   private readonly gameLoop: GameLoop;
 
@@ -21,17 +21,17 @@ export class GameScene {
   constructor(app: Application) {
     this.app = app;
 
-    this.gameContainer = new GameContainer();
-    this.uiContainer = new UIContainer();
+    this.gameLayer = new GameLayer();
+    this.uiLayer = new UILayer();
 
-    this.menuScreen = new MenuScreenContainer();
-    this.menuScreen.onStart = () => this.startGame();
+    this.menuScreenLayer = new MenuScreenLayer();
+    this.menuScreenLayer.onStart = () => this.startGame();
 
-    this.gameLoop = new GameLoop(this.gameContainer);
+    this.gameLoop = new GameLoop(this.gameLayer);
 
-    app.stage.addChild(this.gameContainer);
-    app.stage.addChild(this.uiContainer);
-    app.stage.addChild(this.menuScreen);
+    app.stage.addChild(this.gameLayer.container);
+    app.stage.addChild(this.uiLayer.container);
+    app.stage.addChild(this.menuScreenLayer.container);
 
     this.showMenu();
   }
@@ -39,20 +39,20 @@ export class GameScene {
   private showMenu(): void {
     this.state = GameState.MENU;
     this.gameLoop.cleanup();
-    this.gameContainer.removeChildren();
-    this.uiContainer.removeChildren();
-    this.menuScreen.show();
+    this.gameLayer.clear();
+    this.uiLayer.clear();
+    this.menuScreenLayer.show();
   }
 
   private startGame(): void {
     this.state = GameState.PLAYING;
-    this.menuScreen.hide();
-    this.uiContainer.init();
+    this.menuScreenLayer.hide();
+    this.uiLayer.init();
 
     this.gameLoop.start();
 
-    this.gameLoop.setOnTimeUpdate((s) => this.uiContainer.setTimerText(s));
-    this.gameLoop.setOnScoreUpdate((s) => this.uiContainer.setScore(s));
+    this.gameLoop.setOnTimeUpdate((s) => this.uiLayer.setTimerText(s));
+    this.gameLoop.setOnScoreUpdate((s) => this.uiLayer.setScore(s));
     this.gameLoop.setOnTimeUp(() => this.endGame());
 
     this.boundGameKey = (e: KeyboardEvent) => {
@@ -79,10 +79,10 @@ export class GameScene {
     }
 
     this.gameLoop.cleanup();
-    this.gameContainer.removeChildren();
+    this.gameLayer.clear();
 
     const { score, goldenCount } = this.gameLoop;
-    this.uiContainer.showResults(score, goldenCount);
+    this.uiLayer.showResults(score, goldenCount);
 
     this.boundEndKey = (e: KeyboardEvent) => {
       if (e.key === "Enter") {

@@ -1,7 +1,8 @@
 import { Container, Text } from "pixi.js";
 import { CONFIG, TITLE_STYLE, UI_STYLE } from "../config";
 
-export class MenuScreenContainer extends Container {
+export class MenuScreenLayer {
+  readonly container = new Container();
   onStart: (() => void) | null = null;
 
   private boundKeyHandler = (e: KeyboardEvent): void => {
@@ -9,7 +10,7 @@ export class MenuScreenContainer extends Container {
   };
 
   show(): void {
-    this.removeChildren();
+    this.container.removeChildren();
 
     const title = new Text({ text: "THE GAME", style: TITLE_STYLE });
     title.anchor.set(0.5);
@@ -24,13 +25,13 @@ export class MenuScreenContainer extends Container {
     prompt.x = CONFIG.CANVAS_WIDTH / 2;
     prompt.y = CONFIG.CANVAS_HEIGHT / 2 + 30;
 
-    this.addChild(title, prompt);
-    this.visible = true;
+    this.container.addChild(title, prompt);
+    this.container.visible = true;
     window.addEventListener("keydown", this.boundKeyHandler);
   }
 
   hide(): void {
-    this.visible = false;
+    this.container.visible = false;
     window.removeEventListener("keydown", this.boundKeyHandler);
   }
 }

@@ -1,12 +1,13 @@
-import { Container, Ticker } from "pixi.js";
+import { Ticker } from "pixi.js";
 import { CONFIG } from "./config";
 import { Letter } from "./Letter";
+import { GameLayer } from "./layers/GameLayer";
 
 export class GameLoop {
   private letters: Letter[] = [];
   private spawnAccumulator = 0;
   private timeLeft = 0;
-  private gameContainer: Container;
+  private gameContainer: GameLayer;
 
   public score = 0;
   public goldenCount = 0;
@@ -15,7 +16,7 @@ export class GameLoop {
   private onScoreUpdate?: (score: number) => void;
   private onTimeUp?: () => void;
 
-  constructor(gameContainer: Container) {
+  constructor(gameContainer: GameLayer) {
     this.gameContainer = gameContainer;
   }
 
@@ -27,7 +28,7 @@ export class GameLoop {
     const x = 40 + Math.random() * (CONFIG.CANVAS_WIDTH - 80);
     const letter = new Letter(char, isGolden, x);
 
-    this.gameContainer.addChild(letter.text);
+    this.gameContainer.container.addChild(letter.text);
     this.letters.push(letter);
   }
 
@@ -72,7 +73,7 @@ export class GameLoop {
 
     this.letters = this.letters.filter((l) => {
       if (!l.alive) {
-        this.gameContainer.removeChild(l.text);
+        this.gameContainer.container.removeChild(l.text);
         l.destroy();
         return false;
       }
