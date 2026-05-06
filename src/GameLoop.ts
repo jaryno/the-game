@@ -106,7 +106,7 @@ export class GameLoop {
         return true;
       }
 
-      if (l.isShard) {
+      if (l.isShard && !l.matched) {
         l.onMiss?.();
       }
       this.gameLayer.container.removeChild(l.text);
@@ -138,6 +138,7 @@ export class GameLoop {
     if (!match) return false;
 
     match.alive = false;
+    match.matched = true;
 
     if (match.isGolden && !match.isShard) {
       this.triggerExplosion(match);

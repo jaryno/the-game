@@ -23,6 +23,7 @@ export class Letter {
   public onMiss?: () => void;
 
   public alive = true;
+  public matched = false;
 
   constructor(
     char: string,
