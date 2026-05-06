@@ -1,5 +1,5 @@
 import { Container, Text } from "pixi.js";
-import { CONFIG, UI_STYLE } from "../config.ts";
+import { CONFIG, UI_STYLE } from "../config";
 
 export class UILayer {
   readonly container = new Container();
@@ -8,7 +8,7 @@ export class UILayer {
   public timerText?: Text;
 
   init() {
-    this.container.removeChildren();
+    this.clear();
 
     this.scoreText = new Text({ text: "Score: 0", style: UI_STYLE });
     this.scoreText.x = 16;
@@ -40,7 +40,7 @@ export class UILayer {
     goldenCount: number,
     shardsCleared: number,
   ): void {
-    this.container.removeChildren();
+    this.clear();
 
     const normalScore = normalCount * CONFIG.NORMAL_POINTS;
     const goldenScore = goldenCount * CONFIG.GOLDEN_POINTS;
@@ -64,6 +64,6 @@ export class UILayer {
   }
 
   clear(): void {
-    this.container.removeChildren();
+    this.container.removeChildren().forEach((c) => c.destroy());
   }
 }

@@ -3,7 +3,7 @@ import { GameLayer } from "./layers/GameLayer";
 import { MenuScreenLayer } from "./layers/MenuScreenLayer";
 import { UILayer } from "./layers/UILayer";
 import { GameState } from "./types/GameState";
-import { GameLoop } from "./GameLoop.ts";
+import { GameLoop } from "./GameLoop";
 
 export class GameScene {
   private app: Application;
@@ -49,11 +49,11 @@ export class GameScene {
     this.menuScreenLayer.hide();
     this.uiLayer.init();
 
-    this.gameLoop.start();
-
     this.gameLoop.setOnTimeUpdate((s) => this.uiLayer.setTimerText(s));
     this.gameLoop.setOnScoreUpdate((s) => this.uiLayer.setScore(s));
     this.gameLoop.setOnTimeUp(() => this.endGame());
+
+    this.gameLoop.start();
 
     this.boundGameKey = (e: KeyboardEvent) => {
       if (this.state === GameState.PLAYING) {

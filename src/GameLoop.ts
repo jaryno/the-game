@@ -1,6 +1,6 @@
 import { Ticker } from "pixi.js";
 import { CONFIG } from "./config";
-import { Letter } from "./Letter";
+import { Letter, ShardCallbacks } from "./Letter";
 import { GameLayer } from "./layers/GameLayer";
 import { ExplosionBurst } from "./ExplosionBurst";
 
@@ -67,6 +67,7 @@ export class GameLoop {
     this.onTimeUpdate?.(Math.ceil(this.timeLeft / 1000));
     this.updateSpawner(ticker.deltaMS);
     this.updateLetters();
+    this.removeLetters();
     this.updateBursts(ticker.deltaMS);
   }
 
@@ -82,14 +83,21 @@ export class GameLoop {
     for (const letter of this.letters) {
       letter.update();
     }
+  }
 
+  private removeLetters(): void {
     this.letters = this.letters.filter((l) => {
-      if (!l.alive) {
-        this.gameLayer.container.removeChild(l.text);
-        l.destroy();
-        return false;
+      if (l.alive) {
+        return true;
       }
-      return true;
+
+      if (l.isShard) {
+        l.onMiss?.();
+      }
+      this.gameLayer.container.removeChild(l.text);
+      l.destroy();
+
+      return false;
     });
   }
 
@@ -120,7 +128,7 @@ export class GameLoop {
       this.triggerExplosion(match);
     } else if (match.isShard) {
       this.shardsCleared++;
-      match.onClear?.();
+      match.onHit?.();
     } else {
       this.score += match.points;
       this.normalCount++;
@@ -140,34 +148,31 @@ export class GameLoop {
       );
 
     let remaining = count;
-    const onClear = () => {
-      if (--remaining > 0) return;
-      this.score += CONFIG.GOLDEN_POINTS;
-      this.goldenCount++;
-      this.onScoreUpdate?.(this.score);
+    let missed = 0;
+    const callbacks: ShardCallbacks = {
+      onHit: () => {
+        if (--remaining > 0 || missed > 0) return;
+        this.score += CONFIG.GOLDEN_POINTS;
+        this.goldenCount++;
+        this.onScoreUpdate?.(this.score);
+      },
+      onMiss: () => {
+        missed++;
+        --remaining;
+      },
     };
 
     const burst = new ExplosionBurst(x, y);
     this.gameLayer.container.addChild(burst.container);
     this.bursts.push(burst);
 
-    this.spawnShards(letter.char, x, y, count, onClear);
-  }
-
-  private spawnShards(
-    char: string,
-    x: number,
-    y: number,
-    count: number,
-    onClear: () => void,
-  ): void {
     for (let i = 0; i < count; i++) {
       const sign = i % 2 === 0 ? 1 : -1;
       const vx =
         sign *
         (CONFIG.SHARD_HORIZONTAL_SPREAD * 0.4 +
           Math.random() * CONFIG.SHARD_HORIZONTAL_SPREAD * 0.6);
-      const shard = new Letter(char, false, x, { vx, y, onClear });
+      const shard = new Letter(letter.char, false, x, { vx, y, callbacks });
       this.gameLayer.container.addChild(shard.text);
       this.letters.push(shard);
     }

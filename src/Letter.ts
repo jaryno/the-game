@@ -1,10 +1,15 @@
 import { Text } from "pixi.js";
 import { CONFIG, GOLDEN_STYLE, NORMAL_STYLE, SHARD_STYLE } from "./config";
 
+export interface ShardCallbacks {
+  onHit: () => void;
+  onMiss: () => void;
+}
+
 export interface ShardOptions {
   vx: number;
   y: number;
-  onClear: () => void;
+  callbacks: ShardCallbacks;
 }
 
 export class Letter {
@@ -15,7 +20,8 @@ export class Letter {
   public points: number;
   public vx: number;
   public text: Text;
-  public onClear?: () => void;
+  public onHit?: () => void;
+  public onMiss?: () => void;
 
   public alive = true;
 
@@ -40,7 +46,8 @@ export class Letter {
       : isGolden
         ? CONFIG.GOLDEN_POINTS
         : CONFIG.NORMAL_POINTS;
-    this.onClear = shardOptions?.onClear;
+    this.onHit = shardOptions?.callbacks.onHit;
+    this.onMiss = shardOptions?.callbacks.onMiss;
 
     this.text = new Text({
       text: char,
