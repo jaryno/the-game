@@ -11,6 +11,8 @@ await app.init({
   antialias: true,
 });
 
-document.getElementById("pixi-container")!.appendChild(app.canvas);
+const container = document.getElementById("pixi-container");
+if (!container) throw new Error("Missing #pixi-container element");
+container.appendChild(app.canvas);
 
 new GameScene(app);

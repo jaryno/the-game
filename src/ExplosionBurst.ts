@@ -53,4 +53,3 @@ export class ExplosionBurst {
     this.container.destroy({ children: true });
   }
 }
-

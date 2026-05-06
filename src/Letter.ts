@@ -17,7 +17,6 @@ export class Letter {
   public readonly isGolden: boolean;
   public readonly isShard: boolean;
   public speed: number;
-  public points: number;
   public vx: number;
   public text: Text;
   public onHit?: () => void;
@@ -41,11 +40,6 @@ export class Letter {
         ? CONFIG.GOLDEN_SPEED
         : CONFIG.NORMAL_SPEED;
 
-    this.points = this.isShard
-      ? 0
-      : isGolden
-        ? CONFIG.GOLDEN_POINTS
-        : CONFIG.NORMAL_POINTS;
     this.onHit = shardOptions?.callbacks.onHit;
     this.onMiss = shardOptions?.callbacks.onMiss;
 

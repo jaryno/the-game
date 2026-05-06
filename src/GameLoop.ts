@@ -11,14 +11,17 @@ export class GameLoop {
   private timeLeft = 0;
   private gameLayer: GameLayer;
 
-  private _score = 0;
   private _normalCount = 0;
   private _goldenCount = 0;
   private _shardsCleared = 0;
 
   get score() {
-    return this._score;
+    return (
+      this._normalCount * CONFIG.NORMAL_POINTS +
+      this._goldenCount * CONFIG.GOLDEN_POINTS
+    );
   }
+
   get normalCount() {
     return this._normalCount;
   }
@@ -64,7 +67,6 @@ export class GameLoop {
     this.bursts = [];
     this.spawnAccumulator = 0;
     this.timeLeft = CONFIG.GAME_DURATION_MS;
-    this._score = 0;
     this._normalCount = 0;
     this._goldenCount = 0;
     this._shardsCleared = 0;
@@ -143,9 +145,8 @@ export class GameLoop {
       this._shardsCleared++;
       match.onHit?.();
     } else {
-      this._score += match.points;
       this._normalCount++;
-      this.onScoreUpdate?.(this._score);
+      this.onScoreUpdate?.(this.score);
     }
 
     return true;
@@ -165,9 +166,8 @@ export class GameLoop {
     const callbacks: ShardCallbacks = {
       onHit: () => {
         if (--remaining > 0 || missed > 0) return;
-        this._score += CONFIG.GOLDEN_POINTS;
         this._goldenCount++;
-        this.onScoreUpdate?.(this._score);
+        this.onScoreUpdate?.(this.score);
       },
       onMiss: () => {
         missed++;
