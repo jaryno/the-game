@@ -34,16 +34,22 @@ export class UILayer {
     }
   }
 
-  showResults(score: number, normalScore: number): void {
+  showResults(
+    score: number,
+    normalCount: number,
+    goldenCount: number,
+    shardsCleared: number,
+  ): void {
     this.container.removeChildren();
 
-    const goldenScore = score - normalScore;
+    const normalScore = normalCount * CONFIG.NORMAL_POINTS;
+    const goldenScore = goldenCount * CONFIG.GOLDEN_POINTS;
 
     const lines = [
       "Game Over",
       "",
-      `Normal letters: ${normalScore} pts`,
-      `Golden clears:  ${goldenScore} pts`,
+      `Normal letters: ${normalCount} caught · ${normalScore} pts`,
+      `Golden clears:  ${goldenCount} cleared · ${shardsCleared} shards · ${goldenScore} pts`,
       "",
       `Total: ${score} pts`,
       "",

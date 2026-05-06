@@ -12,7 +12,7 @@ export class GameLoop {
   private gameLayer: GameLayer;
 
   public score = 0;
-  public normalScore = 0;
+  public normalCount = 0;
   public goldenCount = 0;
   public shardsCleared = 0;
 
@@ -52,7 +52,7 @@ export class GameLoop {
     this.spawnAccumulator = 0;
     this.timeLeft = CONFIG.GAME_DURATION_MS;
     this.score = 0;
-    this.normalScore = 0;
+    this.normalCount = 0;
     this.goldenCount = 0;
     this.shardsCleared = 0;
   }
@@ -119,10 +119,11 @@ export class GameLoop {
     if (match.isGolden && !match.isShard) {
       this.triggerExplosion(match);
     } else if (match.isShard) {
+      this.shardsCleared++;
       match.onClear?.();
     } else {
       this.score += match.points;
-      this.normalScore += match.points;
+      this.normalCount++;
       this.onScoreUpdate?.(this.score);
     }
 
@@ -143,7 +144,6 @@ export class GameLoop {
       if (--remaining > 0) return;
       this.score += CONFIG.GOLDEN_POINTS;
       this.goldenCount++;
-      this.shardsCleared++;
       this.onScoreUpdate?.(this.score);
     };
 

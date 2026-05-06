@@ -81,8 +81,8 @@ export class GameScene {
     this.gameLoop.cleanup();
     this.gameLayer.clear();
 
-    const { score, normalScore } = this.gameLoop;
-    this.uiLayer.showResults(score, normalScore);
+    const { score, normalCount, goldenCount, shardsCleared } = this.gameLoop;
+    this.uiLayer.showResults(score, normalCount, goldenCount, shardsCleared);
 
     this.boundEndKey = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
