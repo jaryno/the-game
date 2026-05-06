@@ -4,8 +4,8 @@ import { CONFIG, UI_STYLE } from "../config";
 export class UILayer {
   readonly container = new Container();
 
-  public scoreText?: Text;
-  public timerText?: Text;
+  private scoreText?: Text;
+  private timerText?: Text;
 
   init() {
     this.clear();

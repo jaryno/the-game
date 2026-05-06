@@ -11,10 +11,23 @@ export class GameLoop {
   private timeLeft = 0;
   private gameLayer: GameLayer;
 
-  public score = 0;
-  public normalCount = 0;
-  public goldenCount = 0;
-  public shardsCleared = 0;
+  private _score = 0;
+  private _normalCount = 0;
+  private _goldenCount = 0;
+  private _shardsCleared = 0;
+
+  get score() {
+    return this._score;
+  }
+  get normalCount() {
+    return this._normalCount;
+  }
+  get goldenCount() {
+    return this._goldenCount;
+  }
+  get shardsCleared() {
+    return this._shardsCleared;
+  }
 
   private onTimeUpdate?: (secondsLeft: number) => void;
   private onScoreUpdate?: (score: number) => void;
@@ -51,10 +64,10 @@ export class GameLoop {
     this.bursts = [];
     this.spawnAccumulator = 0;
     this.timeLeft = CONFIG.GAME_DURATION_MS;
-    this.score = 0;
-    this.normalCount = 0;
-    this.goldenCount = 0;
-    this.shardsCleared = 0;
+    this._score = 0;
+    this._normalCount = 0;
+    this._goldenCount = 0;
+    this._shardsCleared = 0;
   }
 
   update(ticker: Ticker): void {
@@ -127,12 +140,12 @@ export class GameLoop {
     if (match.isGolden && !match.isShard) {
       this.triggerExplosion(match);
     } else if (match.isShard) {
-      this.shardsCleared++;
+      this._shardsCleared++;
       match.onHit?.();
     } else {
-      this.score += match.points;
-      this.normalCount++;
-      this.onScoreUpdate?.(this.score);
+      this._score += match.points;
+      this._normalCount++;
+      this.onScoreUpdate?.(this._score);
     }
 
     return true;
@@ -152,9 +165,9 @@ export class GameLoop {
     const callbacks: ShardCallbacks = {
       onHit: () => {
         if (--remaining > 0 || missed > 0) return;
-        this.score += CONFIG.GOLDEN_POINTS;
-        this.goldenCount++;
-        this.onScoreUpdate?.(this.score);
+        this._score += CONFIG.GOLDEN_POINTS;
+        this._goldenCount++;
+        this.onScoreUpdate?.(this._score);
       },
       onMiss: () => {
         missed++;
