@@ -24,8 +24,7 @@ export class GameScene {
     this.gameLayer = new GameLayer();
     this.uiLayer = new UILayer();
 
-    this.menuScreenLayer = new MenuScreenLayer();
-    this.menuScreenLayer.onStart = () => this.startGame();
+    this.menuScreenLayer = new MenuScreenLayer(() => this.startGame());
 
     this.gameLoop = new GameLoop(this.gameLayer);
     this.gameLoop.setOnTimeUpdate((s) => this.uiLayer.setTimerText(s));

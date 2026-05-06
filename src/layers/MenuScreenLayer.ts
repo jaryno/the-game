@@ -3,10 +3,16 @@ import { CONFIG, TITLE_STYLE, UI_STYLE } from "../config";
 
 export class MenuScreenLayer {
   readonly container = new Container();
-  onStart: (() => void) | null = null;
+  private readonly onStart: () => void;
+
+  constructor(onStart: () => void) {
+    this.onStart = onStart;
+  }
 
   private boundKeyHandler = (e: KeyboardEvent): void => {
-    if (e.key === "Enter") this.onStart?.();
+    if (e.key === "Enter") {
+      this.onStart();
+    }
   };
 
   show(): void {

@@ -12,7 +12,11 @@ export class ExplosionBurst {
   private readonly particles: Particle[] = [];
   private elapsed = 0;
 
-  public done = false;
+  private _done = false;
+
+  get done() {
+    return this._done;
+  }
 
   constructor(x: number, y: number) {
     for (let i = 0; i < CONFIG.BURST_PARTICLE_COUNT; i++) {
@@ -45,7 +49,7 @@ export class ExplosionBurst {
     }
 
     if (progress >= 1) {
-      this.done = true;
+      this._done = true;
     }
   }
 

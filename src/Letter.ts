@@ -16,8 +16,8 @@ export class Letter {
   public readonly char: string;
   public readonly isGolden: boolean;
   public readonly isShard: boolean;
-  public speed: number;
-  public vx: number;
+  private readonly speed: number;
+  private vx: number;
   public text: Text;
   public onHit?: () => void;
   public onMiss?: () => void;
@@ -53,7 +53,7 @@ export class Letter {
     });
     this.text.anchor.set(0.5);
     this.text.x = x;
-    this.text.y = shardOptions?.y ?? -50;
+    this.text.y = shardOptions?.y ?? CONFIG.LETTER_SPAWN_Y;
   }
 
   update(): void {
