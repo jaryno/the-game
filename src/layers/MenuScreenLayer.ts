@@ -10,7 +10,7 @@ export class MenuScreenLayer {
   };
 
   show(): void {
-    this.container.removeChildren();
+    this.container.removeChildren().forEach((c) => c.destroy());
 
     const title = new Text({ text: "THE GAME", style: TITLE_STYLE });
     title.anchor.set(0.5);

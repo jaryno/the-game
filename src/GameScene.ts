@@ -28,6 +28,9 @@ export class GameScene {
     this.menuScreenLayer.onStart = () => this.startGame();
 
     this.gameLoop = new GameLoop(this.gameLayer);
+    this.gameLoop.setOnTimeUpdate((s) => this.uiLayer.setTimerText(s));
+    this.gameLoop.setOnScoreUpdate((s) => this.uiLayer.setScore(s));
+    this.gameLoop.setOnTimeUp(() => this.endGame());
 
     app.stage.addChild(this.gameLayer.container);
     app.stage.addChild(this.uiLayer.container);
@@ -48,10 +51,6 @@ export class GameScene {
     this.state = GameState.PLAYING;
     this.menuScreenLayer.hide();
     this.uiLayer.init();
-
-    this.gameLoop.setOnTimeUpdate((s) => this.uiLayer.setTimerText(s));
-    this.gameLoop.setOnScoreUpdate((s) => this.uiLayer.setScore(s));
-    this.gameLoop.setOnTimeUp(() => this.endGame());
 
     this.gameLoop.start();
 
