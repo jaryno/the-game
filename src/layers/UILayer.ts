@@ -34,18 +34,18 @@ export class UILayer {
     }
   }
 
-  showResults(score: number, goldenCount: number): void {
+  showResults(score: number, normalScore: number): void {
     this.container.removeChildren();
 
-    const finalScore = score + goldenCount * CONFIG.GOLDEN_LETTER_PRICE;
+    const goldenScore = score - normalScore;
 
     const lines = [
-      "Time's Up!",
+      "Game Over",
       "",
-      `Points earned: ${score}`,
-      `Golden letters hit: ${goldenCount}`,
+      `Normal letters: ${normalScore} pts`,
+      `Golden clears:  ${goldenScore} pts`,
       "",
-      `${score} + (${goldenCount} × ${CONFIG.GOLDEN_LETTER_PRICE}) = ${finalScore}`,
+      `Total: ${score} pts`,
       "",
       "Press ENTER to play again",
     ];
