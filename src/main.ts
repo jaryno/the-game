@@ -16,3 +16,16 @@ if (!container) throw new Error("Missing #pixi-container element");
 container.appendChild(app.canvas);
 
 new GameScene(app);
+
+function resize() {
+  const scale = Math.min(
+    1,
+    window.innerWidth / CONFIG.CANVAS_WIDTH,
+    window.innerHeight / CONFIG.CANVAS_HEIGHT,
+  );
+  app.canvas.style.width = `${CONFIG.CANVAS_WIDTH * scale}px`;
+  app.canvas.style.height = `${CONFIG.CANVAS_HEIGHT * scale}px`;
+}
+
+window.addEventListener("resize", resize);
+resize();
